@@ -10,11 +10,11 @@ export default function References() {
     },
     {
       id: 3,
-      text: "Lexicomp. Pediatric & Neonatal Lexi-Drugs. In: Lexicomp Online. Hudson, OH: Lexicomp; 2024 [cited 2024 Apr 16]. Available from: https://online.lexi.com",
+      text: "Lexicomp. Pediatric & Neonatal Lexi-Drugs. In: Lexicomp Online. Hudson, OH: Lexicomp; 2024 [cited 2024 Apr 16].",
     },
     {
       id: 4,
-      text: "Institute for Safe Medication Practices (ISMP). ISMP List of Error-Prone Abbreviations, Symbols, and Dose Designations. Horsham (PA): ISMP; 2024 [cited 2026 Apr 16]. Available from: https://online.ecri.org/hubfs/ISMP/Resources/ISMP_ErrorProneAbbreviation_List.pdf",
+      text: "Institute for Safe Medication Practices (ISMP). ISMP List of Error-Prone Abbreviations, Symbols, and Dose Designations. Horsham (PA): ISMP; 2024 [cited 2026 Apr 16].",
     }
   ];
 
