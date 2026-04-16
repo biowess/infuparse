@@ -597,21 +597,35 @@ export function computeExpression(input: string, settings: ComputeSettings = {})
       if (drugs.length > 0 && !context.drugName) context.drugName = drugs[0].name;
     });
 
-    const segmentPaths = segments.map(segmentText => {
-      const entities = extractEntities(segmentText);
-      const drugEntity = entities.find(e => e.type === 'drug_name') as DrugNameEntity | undefined;
-      const path = buildSegmentGraph(entities, segmentText, context);
-      
-      // Apply alias penalty if the raw name doesn't match the canonical name
-      if (drugEntity && drugEntity.name !== drugEntity.raw.toLowerCase()) {
-        if ('confidence' in path) {
-          path.confidence = Math.min(path.confidence, 80);
-        }
-        if (!path.warnings) path.warnings = [];
-        if (!path.warnings.includes('Drug alias normalized.')) {
-          path.warnings.push('Drug alias normalized.');
-        }
-      }
+    const segmentPaths = segments.map((segmentText) => {
+  const entities = extractEntities(segmentText);
+  const drugEntity = entities.find(
+    (e) => e.type === "drug_name"
+  ) as DrugNameEntity | undefined;
+
+  const basePath = buildSegmentGraph(entities, segmentText, context);
+
+  // normalize into a safe mutable copy (fixes union + mutation issues)
+  const path = {
+    ...basePath,
+    warnings: "warnings" in basePath ? [...(basePath.warnings ?? [])] : [],
+  };
+
+  // Apply alias penalty if the raw name doesn't match the canonical name
+  if (
+    drugEntity &&
+    drugEntity.name !== drugEntity.raw.toLowerCase() &&
+    path.type === "complete"
+  ) {
+    path.confidence = Math.min(path.confidence, 80);
+
+    if (!path.warnings.includes("Drug alias normalized.")) {
+      path.warnings.push("Drug alias normalized.");
+    }
+  }
+
+  return path;
+});
       
       return { segmentText, entities, drugEntity, path };
     });
