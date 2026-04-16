@@ -597,7 +597,7 @@ export function computeExpression(input: string, settings: ComputeSettings = {})
       if (drugs.length > 0 && !context.drugName) context.drugName = drugs[0].name;
     });
 
-    const segmentPaths = segments.map((segmentText) => {
+  const segmentPaths = segments.map((segmentText) => {
   const entities = extractEntities(segmentText);
   const drugEntity = entities.find(
     (e) => e.type === "drug_name"
@@ -605,7 +605,6 @@ export function computeExpression(input: string, settings: ComputeSettings = {})
 
   const basePath = buildSegmentGraph(entities, segmentText, context);
 
-  // normalize into a safe mutable copy (fixes union + mutation issues)
   const path = {
     ...basePath,
     warnings: "warnings" in basePath ? [...(basePath.warnings ?? [])] : [],
@@ -624,11 +623,8 @@ export function computeExpression(input: string, settings: ComputeSettings = {})
     }
   }
 
-  return path;
+  return { segmentText, entities, drugEntity, path };
 });
-      
-      return { segmentText, entities, drugEntity, path };
-    });
 
     segmentPaths.forEach(({ entities, drugEntity, path }, index) => {
       let resolvedDrugName = drugEntity ? drugEntity.name : null;
