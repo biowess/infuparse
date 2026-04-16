@@ -611,17 +611,27 @@ export function computeExpression(input: string, settings: ComputeSettings = {})
   };
 
   // Apply alias penalty if the raw name doesn't match the canonical name
-  if (
-    drugEntity &&
-    drugEntity.name !== drugEntity.raw.toLowerCase() &&
-    path.type === "complete"
-  ) {
-    path.confidence = Math.min(path.confidence, 80);
+  const isCompletePath =
+  path.type === "complete_infusion" ||
+  path.type === "vol_time_infusion" ||
+  path.type === "vol_time_implicit" ||
+  path.type === "standalone_dose";
 
-    if (!path.warnings.includes("Drug alias normalized.")) {
-      path.warnings.push("Drug alias normalized.");
-    }
+if (
+  drugEntity &&
+  drugEntity.name !== drugEntity.raw.toLowerCase() &&
+  isCompletePath &&
+  "confidence" in path &&
+  "warnings" in path
+) {
+  path.confidence = Math.min(path.confidence, 80);
+
+  if (!path.warnings) path.warnings = [];
+
+  if (!path.warnings.includes("Drug alias normalized.")) {
+    path.warnings.push("Drug alias normalized.");
   }
+}
 
   return { segmentText, entities, drugEntity, path };
 });
